@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 export async function POST() {
   try {
@@ -42,9 +40,14 @@ export async function POST() {
       }
     }
 
-    return NextResponse.json({ message: "✅ Database reset and reseeded successfully" });
+    return NextResponse.json({
+      message: "✅ Database reset and reseeded successfully",
+    });
   } catch (error: any) {
     console.error(error);
-    return NextResponse.json({ error: "❌ Reset failed", details: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "❌ Reset failed", details: error.message },
+      { status: 500 }
+    );
   }
 }

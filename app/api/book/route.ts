@@ -1,26 +1,27 @@
-import { NextResponse } from "next/server"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
-    const { count } = await req.json()
+    const { count } = await req.json();
 
     if (!count || count < 1) {
-      return NextResponse.json({ error: "Invalid room count" }, { status: 400 })
+      return NextResponse.json(
+        { error: "Invalid room count" },
+        { status: 400 }
+      );
     }
 
     const availableRooms = await prisma.room.findMany({
       where: { isAvailable: true },
       take: count,
-    })
+    });
 
     if (availableRooms.length < count) {
       return NextResponse.json(
         { error: "Not enough available rooms" },
         { status: 400 }
-      )
+      );
     }
 
     const booked = await Promise.all(
@@ -30,14 +31,14 @@ export async function POST(req: Request) {
           data: { isAvailable: false },
         })
       )
-    )
+    );
 
     return NextResponse.json({
       message: `✅ Successfully booked ${count} room(s)`,
       rooms: booked,
-    })
+    });
   } catch (err: any) {
-    console.error(err)
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    console.error(err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
