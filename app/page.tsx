@@ -60,6 +60,7 @@ export default function Page() {
   };
 
   const handleBook = async () => {
+    setIsLoading(true);
     if (numberOfRooms <= 0) return;
 
     try {
@@ -71,11 +72,9 @@ export default function Page() {
 
       if (!res.ok) {
         const error = await res.json();
-        showNotification(
-          "error",
-          "Booking Failed",
-          `There was an error processing your booking. Error: ${error.message}`
-        );
+        showNotification("error", "Booking Failed", `${error.error}`);
+        setIsLoading(false);
+
         return;
       }
 
@@ -85,8 +84,10 @@ export default function Page() {
       const roomsData = await roomsRes.json();
       setRooms(roomsData);
       setSelectedRooms(new Set());
+      setIsLoading(false);
     } catch (err) {
       console.error(err);
+      setIsLoading(false);
       showNotification(
         "error",
         "Booking Failed",
@@ -96,6 +97,7 @@ export default function Page() {
   };
 
   const handleReset = async () => {
+    setIsLoading(true);
     setSelectedRooms(new Set());
     const result = await fetch("/api/reset", {
       method: "POST",
@@ -107,14 +109,17 @@ export default function Page() {
         "Reset Failed",
         `❌ Something went wrong while reset`
       );
+      setIsLoading(false);
     }
     const rooms = await fetch("/api/rooms");
     const roomsData = await rooms.json();
     showNotification("success", "Reset Successful", "Data Cleared");
     setRooms(roomsData);
+    setIsLoading(false);
   };
 
   const handleRandom = async () => {
+    setIsLoading(true);
     const result = await fetch("/api/random", {
       method: "POST",
     });
@@ -125,6 +130,7 @@ export default function Page() {
         "Random Setting Failed",
         `❌ Something went wrong while network call`
       );
+      setIsLoading(false);
     }
     showNotification(
       "success",
@@ -133,6 +139,7 @@ export default function Page() {
     );
 
     await getRooms();
+    setIsLoading(false);
   };
 
   const getRoomStatusColor = (room: Room) => {
