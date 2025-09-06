@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,6 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/loadinig-spinner";
-import { NotificationModal } from "@/components/notification-modal";
 import { ToastNotification } from "@/components/toast-notification";
 
 type RoomStatus = "available" | "occupied";
@@ -18,7 +18,7 @@ interface Room {
   status: RoomStatus;
 }
 
-export default function HotelBookingSystem() {
+export default function Page() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [selectedRooms, setSelectedRooms] = useState<Set<string>>(new Set());
   const [numberOfRooms, setNumberOfRooms] = useState(1);
