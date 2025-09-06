@@ -51,7 +51,10 @@ class RoomBookingOptimizer {
     } else {
       return (
         2 * Math.abs(room1.floorNumber - room2.floorNumber) +
-        Math.abs(room1.position - room2.position)
+        room1.position -
+        1 +
+        room2.position -
+        1
       );
     }
   }
@@ -194,15 +197,15 @@ export async function POST(req: Request) {
       },
     });
 
-    if (availableRooms.length < count) {
+    const optimizer = new RoomBookingOptimizer(availableRooms);
+
+    const selectedRooms = optimizer.findOptimalRooms(count);
+    if (selectedRooms.length < count) {
       return NextResponse.json(
         { error: "Not enough available rooms" },
         { status: 400 }
       );
     }
-    const optimizer = new RoomBookingOptimizer(availableRooms);
-
-    const selectedRooms = optimizer.findOptimalRooms(count);
     const roomIds = selectedRooms.map((room) => room.id);
     const bookedRooms = await Promise.all(
       roomIds.map((roomId) =>
@@ -214,7 +217,7 @@ export async function POST(req: Request) {
     );
 
     return NextResponse.json({
-      message: `✅ Successfully booked ${count} room(s)`,
+      message: `Successfully booked ${count} room(s)`,
       rooms: bookedRooms,
     });
   } catch (err: any) {

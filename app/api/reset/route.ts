@@ -43,12 +43,12 @@ export async function POST() {
       }
     }
     return NextResponse.json({
-      message: "✅ Database reset and reseeded successfully",
+      message: "Database reset and reseeded successfully",
     });
   } catch (error: any) {
     console.error(error);
     return NextResponse.json(
-      { error: "❌ Reset failed", details: error.message },
+      { error: "Reset failed", details: error.message },
       { status: 500 }
     );
   }

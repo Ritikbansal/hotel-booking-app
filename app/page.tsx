@@ -91,7 +91,7 @@ export default function Page() {
       showNotification(
         "error",
         "Booking Failed",
-        `❌ Something went wrong while booking`
+        `Something went wrong while booking`
       );
     }
   };
@@ -107,7 +107,7 @@ export default function Page() {
       showNotification(
         "error",
         "Reset Failed",
-        `❌ Something went wrong while reset`
+        `Something went wrong while reset`
       );
       setIsLoading(false);
     }
@@ -128,7 +128,7 @@ export default function Page() {
       showNotification(
         "error",
         "Random Setting Failed",
-        `❌ Something went wrong while network call`
+        `Something went wrong while network call`
       );
       setIsLoading(false);
     }
