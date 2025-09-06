@@ -1,6 +1,6 @@
+import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-
+const prisma = new PrismaClient();
 export async function POST() {
   const randomNumber = Math.floor(Math.random() * 97) + 1;
   await prisma.room.updateMany({
