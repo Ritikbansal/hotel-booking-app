@@ -101,7 +101,7 @@ export default function HotelBookingSystem() {
       method: "POST",
     });
     if (!result.ok) {
-      const error = result.json();
+      const error = await result.json();
       showNotification(
         "error",
         "Reset Failed",
