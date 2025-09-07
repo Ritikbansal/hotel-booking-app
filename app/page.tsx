@@ -24,6 +24,7 @@ export default function Page() {
   const [numberOfRooms, setNumberOfRooms] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isBooking, setIsBooking] = useState(false);
+  const [lastBookedRooms, setLastBookedRooms] = useState();
   const [notification, setNotification] = useState<{
     isOpen: boolean;
     type: "success" | "error" | "warning";
@@ -80,6 +81,7 @@ export default function Page() {
 
       const data = await res.json();
       showNotification("success", "Booking Successful", data.message);
+      if (data.message) setLastBookedRooms(data.rooms.join(", "));
       const roomsRes = await fetch("/api/rooms");
       const roomsData = await roomsRes.json();
       setRooms(roomsData);
@@ -257,6 +259,11 @@ export default function Page() {
               <Badge variant="outline" className="text-sm text-destructive">
                 Occupied: {occupiedRooms}
               </Badge>
+              {lastBookedRooms && (
+                <Badge variant="outline" className="text-sm text-amber-800">
+                  Last Set Of Booked Room(s): {lastBookedRooms}
+                </Badge>
+              )}
             </div>
           )}
         </div>
