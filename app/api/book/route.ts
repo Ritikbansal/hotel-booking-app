@@ -62,14 +62,18 @@ class RoomBookingOptimizer {
   private getTotalTravelTime(rooms: RoomPosition[]): number {
     if (rooms.length <= 1) return 0;
 
-    const sorted = [...rooms].sort((a, b) => {
-      if (a.floorNumber !== b.floorNumber) {
-        return a.floorNumber - b.floorNumber;
-      }
-      return a.position - b.position;
-    });
+    let maxTime = 0;
 
-    return this.calculateTravelTime(sorted[0], sorted[sorted.length - 1]);
+    for (let i = 0; i < rooms.length; i++) {
+      for (let j = i + 1; j < rooms.length; j++) {
+        const time = this.calculateTravelTime(rooms[i], rooms[j]);
+        if (time > maxTime) {
+          maxTime = time;
+        }
+      }
+    }
+
+    return maxTime;
   }
 
   private findSingleFloorSolution(count: number): RoomPosition[] | null {
@@ -137,6 +141,15 @@ class RoomBookingOptimizer {
       if (travelTime < minTravelTime) {
         minTravelTime = travelTime;
         bestCombination = combination;
+      } else if (travelTime === minTravelTime) {
+        const currentSum = bestCombination.reduce(
+          (acc, r) => acc + r.roomNumber,
+          0
+        );
+        const newSum = combination.reduce((acc, r) => acc + r.roomNumber, 0);
+        if (newSum < currentSum) {
+          bestCombination = combination;
+        }
       }
     }
 
@@ -217,8 +230,10 @@ export async function POST(req: Request) {
     );
 
     return NextResponse.json({
-      message: `Successfully booked ${count} room(s)`,
-      rooms: bookedRooms,
+      message: `Successfully booked ${bookedRooms
+        .map((room) => room.roomNumber)
+        .join(",")} - ${count} room(s)`,
+      rooms: bookedRooms.map((room) => room.roomNumber),
     });
   } catch (err: any) {
     console.error(err);
